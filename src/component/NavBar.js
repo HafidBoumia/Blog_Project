@@ -30,12 +30,12 @@ export default function Navbar({setSearch, search,posts, logedUser, setLogedUser
             </div>
             <div className="flex items-center">
                 <div className="">
-                    <input type="text" value={search} placeholder="search" onChange={(e)=>handle(e)}/>
+                    <input type="text" value={search} placeholder="search" onChange={(e)=>handle(e)} className="border border-gray-300 mx-10 rounded-full px-3 focus:outline-none"/>
                 </div>
                 <img />
                 {!logedUser ? (
                     <>
-                    <NavLink to="/Login">Login</NavLink> / <NavLink to="/Rejister">Register</NavLink>
+                    <NavLink to="/Login">Register</NavLink> <span className="px-2">/</span> <NavLink to="/Rejister">Login</NavLink>
                     </>
                 ):(
                     <>
