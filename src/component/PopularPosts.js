@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-export default function PopularPosts({posts}) {
+export default function PopularPosts({ posts }) {
     return (
         <div className="bg-white px-4 py-3 overflow-y-auto">
             <span className="font-medium">Popular Posts</span>
@@ -17,4 +17,4 @@ export default function PopularPosts({posts}) {
             </div>
         </div>
     )
-}
+}   

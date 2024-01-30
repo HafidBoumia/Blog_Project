@@ -4,22 +4,22 @@ import { TfiTwitter } from "react-icons/tfi";
 import { FaGithub } from "react-icons/fa";
 
 
-export default function FilteredPostDetails({setSearch,search, posts, filtredPosts}) {
+export default function FilteredPostDetails({ setSearch, search, posts, }) {
     const description = 'Web development is the process of creating and maintaining websites or web applications. It encompasses a range of tasks, from designing the user interface and user experience to implementing the underlying logic and functionality. Web development can be broadly categorized into two main areas: front-end and back-end development.Front-end development involves creating the visual components of a website that users interact with directly. This includes the design, layout, and user interface. Technologies such as HTML, CSS, and JavaScript are commonly used in front-end development. Front-end developers work to ensure a seamless and visually appealing user experience.'
     useEffect(() => {
         if (!search)
             return;
         localStorage.setItem('search', search);
-    },[search])
+    }, [search])
 
     useEffect(() => {
         const search = localStorage.getItem('search');
         setSearch(search)
     }, [])
 
-    return (    
+    return (
         <div className="space-y-16">
-            {posts && 
+            {posts &&
                 posts.filter(post => post.tags.replace(/[,\s]/g, "").toLowerCase().includes(search.replace(/[,\s]/g, "").toLowerCase())).map((post, index) => (
                     <div className="space-y-4" key={index}>
                         <div className="flex justify-between px-10 items-center">

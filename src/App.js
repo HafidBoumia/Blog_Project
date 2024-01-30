@@ -26,6 +26,9 @@ function App() {
   const [search, setSearch] = useState(null);
   const [logedUser, setLogedUser] = useState(false);
   const [object, setObject] = useState(null)
+  const [isReact, setIsReact] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [isAdded, setIsAdded] = useState(false);
   const [inpts, setInpts] = useState({
     name: '',
     email: '',
@@ -42,47 +45,41 @@ function App() {
     comments_count: 0,
     public_reactions_count: 0,
     created_by_U: '',
-    User: {
-      name: '',
-      username: '',
-      twitter_username: '',
-      github_username: '',
-      website_url: '',
-      profile_image: ''
-    }
+    User: {}
   })
-  const [isReact, setIsReact] = useState(false);
-  const [userId, setUserId] = useState(null);
-
+  const [User, setUser] = useState({
+    name: '',
+    username: '',
+    twitter_username: '',
+    github_username: '',
+    website_url: '',
+    profile_image: ''
+  })
 
   const getData = async () => {
     const posts = await axios.get('https://dev.to/api/articles/');
-    if(BlogPosts){
-      setNewArray(posts.data)
-    }else{
-      setBlogPosts(posts.data)
-    }
+    setNewArray(posts.data)
   }
 
-    const postReact = (index) => {
-      const newPost = [...BlogPosts];
-      const postIndex = newPost.findIndex(post => post.id === index);
-  
-      if (postIndex !== -1) {
-          if(!isReact){
-            newPost[postIndex].public_reactions_count += 1;
-          }else{
-            newPost[postIndex].public_reactions_count -= 1;
-          }
-          setBlogPosts([...newPost]);
-          localStorage.setItem('obj', JSON.stringify(newPost));
-          console.log(newPost[postIndex]);
-      } else {
-          console.log("Post not found");
-      }
-      setIsReact(!isReact)
-  }
-  
+  // const postReact = (index) => {
+  //   const newPost = [...BlogPosts];
+  //   const postIndex = newPost.findIndex(post => post.id === index);
+
+  //   if (postIndex !== -1) {
+  //     if (!isReact) {
+  //       newPost[postIndex].public_reactions_count += 1;
+  //     } else {
+  //       newPost[postIndex].public_reactions_count -= 1;
+  //     }
+  //     setBlogPosts([...newPost]);
+  //     localStorage.setItem('obj', JSON.stringify(newPost));
+  //     console.log(newPost[postIndex]);
+  //   } else {
+  //     console.log("Post not found");
+  //   }
+  //   setIsReact(!isReact)
+  // }
+
   const edit = (post, index) => {
     setSelectedId(index)
     setNewPost(post)
@@ -100,11 +97,20 @@ function App() {
   useEffect(() => {
     getData();
     const isloged = localStorage.getItem('isloged')
-    let inpts = localStorage.getItem('inpts')
-    inpts = JSON.parse(inpts)
-    setInpts(inpts)
+    let inpt = JSON.parse(localStorage.getItem('inpt'))
+    setInpts(inpt)
     setLogedUser(isloged)
-  }, [])
+    if (inpt) {
+      setUserId(inpt.userId)
+    }
+  }, [userId])
+
+  useEffect(() => {
+    if (!BlogPosts)
+      return;
+    const obj = JSON.stringify(BlogPosts);
+    localStorage.setItem('obj', obj);
+  }, [isAdded])
 
   useEffect(() => {
     let obj = localStorage.getItem('obj')
@@ -114,25 +120,32 @@ function App() {
     } else {
       setBlogPosts(newArray)
     }
-  }, [])
-  
-  console.log(userId)
+  }, [newArray])
+
 
   return (
     <BrowserRouter>
       <div className="space-y-5 bg-slate-200">
-        <Navbar setSearch={setSearch} search={search} posts={BlogPosts} logedUser={logedUser} setLogedUser={setLogedUser} setIsReact={setIsReact}/>
+        <Navbar setSearch={setSearch} search={search} posts={BlogPosts} logedUser={logedUser} setLogedUser={setLogedUser} setIsReact={setIsReact} Tag={Tag} />
         <Routes>
-          <Route path='/Details' element={<Details posts={BlogPosts} setSearch={setSearch} Tag={Tag} setTag={setTag} newArray={newArray}/>} />
-          <Route path='/PostDetails/:id' element={<PostDetails />} />
-          <Route path='/filtredPosts' element={<FilteredPostDetails posts={BlogPosts} search={search} setTag={setTag} setSearch={setSearch} />} />
+          <Route path='/Details' element={
+          <Details posts={BlogPosts} Tag={Tag} setTag={setTag} />
+          }/>
+          <Route path='/PostDetails/:id' element={
+          <PostDetails />
+          }/>
+          <Route path='/filtredPosts' element={
+          <FilteredPostDetails posts={BlogPosts} search={search} setTag={setTag} setSearch={setSearch} />
+          }/>
           <Route path='/UserProfile' element={
-            <UserProfile posts={BlogPosts} inpts={inpts} logedUser={logedUser} setInpts={setInpts} edit={edit} destroy={destroy} userId={userId} />
+            <UserProfile posts={BlogPosts} inpts={inpts} logedUser={logedUser} edit={edit} destroy={destroy} userId={userId} />
           } />
-          <Route path='/CreatePost' element={<CreatePost logedUser={logedUser} setObject={setObject} object={object} posts={BlogPosts} setPosts={setBlogPosts} newPost={newPost} setNewPost={setNewPost} selectedId={selectedId} setSelectedId={setSelectedId} userId={userId}/>} />
-          <Route path='/Login' element={<Login inpts={inpts} setInpts={setInpts} setUserId={setUserId}/>} />
+          <Route path='/CreatePost' element={<CreatePost logedUser={logedUser} posts={BlogPosts} setPosts={setBlogPosts} newPost={newPost} setNewPost={setNewPost} selectedId={selectedId} setSelectedId={setSelectedId} userId={userId} setIsAdded={setIsAdded} isAdded={isAdded} />} />
           {!logedUser && (
-          <Route path='/Rejister' element={<Rejister inpts={inpts} setInpts={setInpts} setLogedUser={setLogedUser} logedUser={logedUser} setUserId={setUserId} />} />
+            <>
+              <Route path='/Rejister' element={<Rejister setLogedUser={setLogedUser}/>} />
+              <Route path='/Login' element={<Login inpts={inpts} setInpts={setInpts} setUserId={setUserId} setLogedUser={setLogedUser} />} />
+            </>
           )}
         </Routes>
 
@@ -144,7 +157,9 @@ function App() {
                   <Categories posts={BlogPosts} setTag={setTag} />
                   <Rendom posts={BlogPosts} setPosts={setBlogPosts} />
                 </div>
+
                 <BlogForm posts={BlogPosts} Tag={Tag} search={search} setTag={setTag} />
+
                 <div className="flex flex-col gap-5 h-screen">
                   <SocialPlugin />
                   <PopularPosts posts={BlogPosts} />
@@ -152,13 +167,16 @@ function App() {
                 </div>
               </>
             } />
+
             <Route path='/' element={
               <>
                 <div className="flex flex-col gap-5 h-screen">
                   <Categories posts={BlogPosts} setTag={setTag} />
                   <Rendom posts={BlogPosts} setPosts={setBlogPosts} />
                 </div>
-                <HomePage posts={BlogPosts} Tag={Tag} setTag={setTag} setSearch={setSearch} search={search} postReact={postReact}/>
+
+                <HomePage posts={BlogPosts} Tag={Tag} setTag={setTag} setSearch={setSearch} search={search} />
+                
                 <div className="flex flex-col gap-5 h-screen">
                   <SocialPlugin />
                   <PopularPosts posts={BlogPosts} />

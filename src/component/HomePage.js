@@ -3,12 +3,11 @@ import { Link, NavLink } from "react-router-dom"
 import { LuHeart } from "react-icons/lu"
 import axios from "axios"
 
-export default function HomePage({ posts, setSearch, search, postReact }) {
+export default function HomePage({ posts, search }) {
     useEffect(() => {
         localStorage.removeItem('tag');
     }, [])
-    
-    const description = 'Web development is the process of creating and maintaining websites or web applications. It encompasses a range of tasks, from designing the user interface and user experience to implementing the underlying logic and functionality. Web development can be broadly categorized into two main areas: front-end and back-end development.Front-end development involves creating the visual components of a website that users interact with directly. This includes the design, layout, and user interface. Technologies such as HTML, CSS, and JavaScript are commonly used in front-end development. Front-end developers work to ensure a seamless and visually appealing user experience.'
+
     return (
         <>
             <div className="col-span-2 space-y-4 overflow-y-auto h-screen">
@@ -24,12 +23,12 @@ export default function HomePage({ posts, setSearch, search, postReact }) {
                                 <div className="px-3 pb-4">
                                     <h4 className="font-bold text-md">{post.title}</h4>
                                     <p className="text-sm font-light">{post.description}</p>
-                                    <div className="flex ">
+                                    <div className="flex  justify-between items-center">
                                         <span className="text-xs font-light">{post.published_at}</span>
-                                        <div className="">
-                                            <button onClick={() => postReact(post.id)}><LuHeart /></button>
+                                        {/* <div className="flex items-center mt-2">
+                                            <button onClick={() => postReact(post.id)}><LuHeart color={isReact ? "red" : "" }/></button>
                                             <code>{post.public_reactions_count}</code>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -42,9 +41,12 @@ export default function HomePage({ posts, setSearch, search, postReact }) {
                                 <div className="px-3 pb-4">
                                     <h4 className="font-bold text-md">{post.title}</h4>
                                     <p className="text-sm font-light">{post.description}</p>
-                                    <div>
+                                    <div className="flex  justify-between items-center">
                                         <span className="text-xs font-light">{post.published_at}</span>
-                                        <button onClick={()=>postReact(post.id)}><LuHeart /></button>
+                                        {/* <div className="flex items-center mt-2">
+                                            <button onClick={() => postReact(post.id)}><LuHeart /></button>
+                                            <code>{post.public_reactions_count}</code>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
